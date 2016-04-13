@@ -220,3 +220,38 @@ test('should work on arrays of nested objects', function(t) {
     t.deepEqual(merge(target, src), expected)
     t.end()
 })
+
+test('should work on date objects', function(t) {
+    var targetDate = new Date('2016-12-17T03:24:00');
+    var srcDate = new Date('2016-12-17T00:00:00');
+
+    var target = { key1: { subkey: targetDate } };
+    var src = { key1: { subkey: srcDate } };
+
+    var expected = { key1: { subkey: srcDate } };
+    var actual = merge(target, src);
+
+    var expVal = expected.key1.subkey.toISOString();
+    var actVal = actual.key1.subkey.toISOString();
+
+    t.deepEqual(actVal, expVal)
+    t.end()
+});
+
+test('should work on date array objects', function(t) {
+    var date1 = new Date('2016-12-17T03:24:00');
+    var date2 = new Date('2016-12-17T00:00:00');
+
+    var target = [date1, date1, date1];
+    var src = [date2, date2, date2];
+
+    var exp = src;
+
+    var actual = merge(target, src);
+
+    actual.forEach(function(item, idx) {
+      t.deepEqual(item.toISOString(), exp[idx].toISOString());
+    });
+
+    t.end();
+})
